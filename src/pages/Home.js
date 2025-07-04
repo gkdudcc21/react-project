@@ -2,13 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 
-
 function Home() {
   const navigate = useNavigate();
   const [articles, setArticles] = useState([]);
+  const [heartCount, setHeartCount] = useState(0);
 
   useEffect(() => {
     const fetchNews = async () => {
+      const storedCount = localStorage.getItem('heartCount');
+      if (storedCount !== null) {
+        setHeartCount(parseInt(storedCount, 10));
+      }
+
       const keywords = ['제로웨이스트', '기후위기', '친환경', '플라스틱 줄이기', '지구온난화', "텀블러 캠페인", "일회용품 규제", "친환경 소비"];
       const randomKeyword = keywords[Math.floor(Math.random() * keywords.length)];
       const apiKey = process.env.REACT_APP_NEWS_API_KEY
@@ -36,6 +41,12 @@ function Home() {
 
     fetchNews();
   }, []);
+
+  const handleHeartClick = () => {
+    const newCount = heartCount + 1;
+    setHeartCount(newCount);
+    localStorage.setItem('heartCount', newCount);
+  };
 
   return (
     <div style={{ fontFamily: 'Arial', padding: '40px', maxWidth: '1000px', margin: '0 auto' }}>
@@ -143,7 +154,7 @@ function Home() {
         <div style={{ flex: 2 }}>
           <h2 style={{ color: '#3ba757' }}>📢 최신 환경 뉴스</h2>
           <ul style={{ listStyle: 'none', padding: 0 }}>
-            {articles.slice(0, 3).map((article, idx) => (
+            {articles.slice(0, 2).map((article, idx) => (
               <li key={idx} style={{ marginBottom: '20px' }}>
                 <a href={article.url} target="_blank" rel="noopener noreferrer" style={{ color: '#000', textDecoration: 'none' }}>
                   <strong>{article.title}</strong>
@@ -166,25 +177,44 @@ function Home() {
           <h3 style={{ color: '#3ba757' }}>✅ 오늘의 제로웨이스트 미션</h3>
           <p>오늘은 <strong>텀블러를 챙겨보세요!</strong></p>
           <p>연간 약 <strong>500</strong>잔의 일회용 컵을 줄일 수 있어요 💚</p>
+          <div style={{ marginTop: '20px', textAlign: 'center' }}>
+            <button
+              onClick={handleHeartClick}
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '28px',
+                color: '#e74c3c',
+                transition: 'transform 0.2s',
+              }}
+              onMouseDown={e => e.currentTarget.style.transform = 'scale(1.2)'}
+              onMouseUp={e => e.currentTarget.style.transform = 'scale(1.0)'}
+              title="하트를 눌러 출석체크!"
+            >
+              ❤️
+            </button>
+            <div style={{ fontSize: '16px', marginTop: '5px', color: '#333' }}>
+              오늘의 하트: <strong>{heartCount}</strong>
+            </div>
+            </div>
+          </div >
+        </div>
+
+        {/* ✅ 환경 슬로건 (가장 하단) */}
+        <div style={{
+          marginTop: '50px',
+          padding: '20px',
+          backgroundColor: '#f0fff4',
+          borderRadius: '10px',
+          textAlign: 'center',
+          color: '#3ba757'
+        }}>
+          <h4>🌍 환경 슬로건</h4>
+          <em style={{ color: '#555' }}>"우리는 지구를 물려받은 것이 아니라 빌려쓰는 것이다."</em>
         </div>
       </div>
-
-
-
-      {/* ✅ 환경 슬로건 (가장 하단) */}
-      <div style={{
-        marginTop: '50px',
-        padding: '20px',
-        backgroundColor: '#f0fff4',
-        borderRadius: '10px',
-        textAlign: 'center',
-        color: '#3ba757'
-      }}>
-        <h4>🌍 환경 슬로건</h4>
-        <em style={{ color: '#555' }}>"우리는 지구를 물려받은 것이 아니라 빌려쓰는 것이다."</em>
-      </div>
-    </div>
-  );
+      );
 }
-export default Home;
+      export default Home;
 
