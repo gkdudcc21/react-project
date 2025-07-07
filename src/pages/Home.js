@@ -6,7 +6,7 @@ function Home() {
   const navigate = useNavigate();
   const [articles, setArticles] = useState([]);
   const [heartCount, setHeartCount] = useState(0);
-
+  
   useEffect(() => {
     const fetchNews = async () => {
       const storedCount = localStorage.getItem('heartCount');
@@ -14,34 +14,24 @@ function Home() {
         setHeartCount(parseInt(storedCount, 10));
       }
 
-      const keywords = ['제로웨이스트', '기후위기', '친환경', '플라스틱 줄이기', '지구온난화', "텀블러 캠페인", "일회용품 규제", "친환경 소비"];
-      const randomKeyword = keywords[Math.floor(Math.random() * keywords.length)];
-      const apiKey = process.env.REACT_APP_NEWS_API_KEY
-
-
-      const newsApiUrl = `https://newsapi.org/v2/everything?q=${randomKeyword}&language=ko&pageSize=5&sortBy=publishedAt&apiKey=${apiKey}`;
-      const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(newsApiUrl)}`;
-
       try {
-        const response = await fetch(proxyUrl);
+        const response = await fetch('https://news-backend-m1od.onrender.com/news');
+        const data = await response.json();
+        console.log("📦 API 응답 데이터:", data);
 
-        const result = await response.json()
-        const data = JSON.parse(result.contents);
-
-        if (data.articles) {
+        if (data.articles && data.articles.length > 0) {
           setArticles(data.articles);
-          console.log(`📰 '${randomKeyword}' 키워드로 ${data.articles.length}개 뉴스 로딩 완료`);
+          console.log(`✅ 환경 뉴스 ${data.articles.length}개 로딩 완료`);
         } else {
-          console.warn('❗ 뉴스 데이터가 없습니다');
+          console.warn("⚠️ 뉴스 데이터가 없습니다");
         }
       } catch (error) {
-        console.error('❌ 뉴스 불러오기 실패:', error);
+        console.error("❌ 뉴스 불러오기 실패:", error);
       }
     };
 
     fetchNews();
   }, []);
-
   const handleHeartClick = () => {
     const newCount = heartCount + 1;
     setHeartCount(newCount);
@@ -197,24 +187,24 @@ function Home() {
             <div style={{ fontSize: '16px', marginTop: '5px', color: '#333' }}>
               오늘의 하트: <strong>{heartCount}</strong>
             </div>
-            </div>
-          </div >
-        </div>
-
-        {/* ✅ 환경 슬로건 (가장 하단) */}
-        <div style={{
-          marginTop: '50px',
-          padding: '20px',
-          backgroundColor: '#f0fff4',
-          borderRadius: '10px',
-          textAlign: 'center',
-          color: '#3ba757'
-        }}>
-          <h4>🌍 환경 슬로건</h4>
-          <em style={{ color: '#555' }}>"우리는 지구를 물려받은 것이 아니라 빌려쓰는 것이다."</em>
-        </div>
+          </div>
+        </div >
       </div>
-      );
+
+      {/* ✅ 환경 슬로건 (가장 하단) */}
+      <div style={{
+        marginTop: '50px',
+        padding: '20px',
+        backgroundColor: '#f0fff4',
+        borderRadius: '10px',
+        textAlign: 'center',
+        color: '#3ba757'
+      }}>
+        <h4>🌍 환경 슬로건</h4>
+        <em style={{ color: '#555' }}>"우리는 지구를 물려받은 것이 아니라 빌려쓰는 것이다."</em>
+      </div>
+    </div>
+  );
 }
-      export default Home;
+export default Home;
 
