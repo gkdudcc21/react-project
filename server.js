@@ -9,7 +9,7 @@ app.use(cors());
 const API_KEY = process.env.API_KEY;
 
 app.get('/news', async (req, res) => {
-    const query = '환경 OR 기후 OR 탄소중립 OR 지구온난화 OR 재활용';
+    const query = '환경 OR 기후변화 OR 제로웨이스트 OR 한국뉴스 OR 최신뉴스 OR 친환경';
 
     try {
         const response = await axios.get('https://newsapi.org/v2/everything', {
@@ -17,10 +17,11 @@ app.get('/news', async (req, res) => {
                 q: query,
                 language: 'ko',
                 sortBy: 'publishedAt',
-                pageSize: 2,
+                pageSize: 5,
                 apiKey: API_KEY,
             },
         });
+        console.log("NewsAPI에서 받은 원본 데이터:", response.data);
 
         res.json(response.data); // 프론트로 전달
     } catch (error) {

@@ -6,7 +6,7 @@ function Home() {
   const navigate = useNavigate();
   const [articles, setArticles] = useState([]);
   const [heartCount, setHeartCount] = useState(0);
-  
+
   useEffect(() => {
     const fetchNews = async () => {
       const storedCount = localStorage.getItem('heartCount');
@@ -144,7 +144,7 @@ function Home() {
         <div style={{ flex: 2 }}>
           <h2 style={{ color: '#3ba757' }}>📢 최신 환경 뉴스</h2>
           <ul style={{ listStyle: 'none', padding: 0 }}>
-            {articles.slice(0, 2).map((article, idx) => (
+            {articles.slice(0, 5).map((article, idx) => (
               <li key={idx} style={{ marginBottom: '20px' }}>
                 <a href={article.url} target="_blank" rel="noopener noreferrer" style={{ color: '#000', textDecoration: 'none' }}>
                   <strong>{article.title}</strong>
